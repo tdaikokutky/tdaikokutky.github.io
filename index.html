@@ -22,6 +22,14 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--brass);outline-offs
 .label{font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--mute)}
 h1,h2,h3{text-wrap:balance;margin:0;font-weight:400}
 
+#intro{position:fixed;inset:0;z-index:100;background:var(--ink);display:flex;align-items:center;justify-content:center;transition:opacity .9s ease .1s}
+#intro .nm{font-family:var(--display);font-style:italic;font-size:clamp(44px,9vw,120px);color:var(--paper);white-space:nowrap;transform-origin:0 0;will-change:transform}
+#intro .nm span{display:inline-block;opacity:0;transform:translateY(.4em);filter:blur(8px);animation:inl .9s cubic-bezier(.2,.7,.2,1) forwards}
+#intro .ln{position:absolute;left:50%;top:calc(50% + clamp(36px,6vw,80px));height:1px;width:0;background:var(--brass);transform:translateX(-50%);animation:inln 1.2s .5s cubic-bezier(.6,0,.2,1) forwards}
+@keyframes inl{to{opacity:1;transform:none;filter:none}}@keyframes inln{to{width:min(320px,50vw)}}
+#intro.go{opacity:0;pointer-events:none}#intro.go .ln{opacity:0;transition:opacity .3s}
+body.intro-on header.top .name{opacity:0}body.intro-on main,body.intro-on .hero{opacity:0}
+header.top .name,.hero{transition:opacity .8s ease}
 header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--ink) 82%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:21;background:var(--ink)}
 .top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:14px}
@@ -176,6 +184,19 @@ div.row{cursor:default}
 .intro.top{margin:64px 0 22px}
 </style>
 
+<div id="intro" aria-hidden="true"><div class="nm">Tatsuya Daikoku</div><div class="ln"></div></div>
+<script>
+(function(){const I=document.getElementById('intro');let seen=false;try{seen=sessionStorage.getItem('introSeen')==='1'}catch(e){}
+  if(seen||matchMedia('(prefers-reduced-motion: reduce)').matches){I.remove();return}
+  document.body.classList.add('intro-on');const nm=I.querySelector('.nm');
+  nm.innerHTML=[...nm.textContent].map((c,i)=>'<span style="animation-delay:'+(i*0.045)+'s">'+(c===' '?'&nbsp;':c)+'</span>').join('');
+  setTimeout(()=>{const tgt=document.querySelector('header.top .name').getBoundingClientRect(),a=nm.getBoundingClientRect();
+    const sc=tgt.height/a.height*1.02,dx=tgt.left-a.left,dy=tgt.top-a.top+(tgt.height-a.height*sc)/2;
+    nm.style.transition='transform 1.1s cubic-bezier(.7,0,.2,1)';nm.style.transform='translate('+dx+'px,'+dy+'px) scale('+sc+')';
+    I.querySelector('.ln').style.opacity=0;
+    setTimeout(()=>{document.body.classList.remove('intro-on');I.classList.add('go');try{sessionStorage.setItem('introSeen','1')}catch(e){}setTimeout(()=>I.remove(),1000)},1050)},1900);
+})();
+</script>
 <header class="top"><div class="wrap">
   <a class="name" href="#top">Tatsuya Daikoku</a>
   <nav aria-label="Sections"><a href="#profile">Profile</a><a href="#books">Books</a><a href="#works">Projects</a><a href="#media">Media</a><a href="#papers">Papers</a></nav>
