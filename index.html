@@ -341,10 +341,12 @@ const NOTES={"C0_01":[[0.007,76,1,97,3.2,3.6],[0.061,77,1,76,2.6,3.4],[0.178,79,
     if(band){for(let i=-3;i<=3;i++){ctx.fillStyle=i%2?'rgba(150,95,60,.35)':'rgba(255,235,205,.18)';ctx.fillRect(cx-r,cy+i*r*.26-r*.07,2*r,r*.14)}}
     const sh=ctx.createRadialGradient(cx-r*.5,cy-r*.5,r*.6,cx-r*.2,cy-r*.2,r*1.6);sh.addColorStop(0,'rgba(0,0,0,0)');sh.addColorStop(1,'rgba(2,3,8,.85)');ctx.fillStyle=sh;ctx.fillRect(cx-r,cy-r,2*r,2*r);ctx.restore();
     const hl=ctx.createRadialGradient(cx,cy,r*.9,cx,cy,r*1.8);hl.addColorStop(0,'rgba(170,190,255,.07)');hl.addColorStop(1,'rgba(0,0,0,0)');ctx.fillStyle=hl;ctx.beginPath();ctx.arc(cx,cy,r*1.8,0,6.283);ctx.fill()};
-  // Earth–Moon–Jupiter seen from beyond the Moon: Moon near (large), Earth behind it, Jupiter far away (tiny); one Sun lights all from the upper left
-  const PL=[{x:.07,y:.34,r:11,c1:'#9fd0ff',c2:'#1d4f9a',earth:1},{x:.94,y:.68,r:15,c1:'#efefe9',c2:'#77767a'},{x:.62,y:.13,r:3.2,c1:'#f3d9b1',c2:'#9a6b45',band:1}];
-  function planets(T){for(const p of PL){const x=p.x*W+Math.sin(T*.03+p.x*7)*2,y=p.y*H+Math.cos(T*.04+p.y*5)*2;planet(x,y,p.r,p.c1,p.c2,p.band);
-      if(p.earth){ctx.save();ctx.beginPath();ctx.arc(x,y,p.r,0,6.283);ctx.clip();ctx.fillStyle='rgba(90,160,90,.35)';ctx.beginPath();ctx.ellipse(x-p.r*.25,y-p.r*.1,p.r*.35,p.r*.5,.5,0,6.283);ctx.fill();ctx.beginPath();ctx.ellipse(x+p.r*.35,y+p.r*.3,p.r*.25,p.r*.2,0,0,6.283);ctx.fill();ctx.restore()}}}
+  // far away, deep in the middle: Earth with its Moon close by, Jupiter and Saturn farther (smaller); one Sun lights all from the upper left
+  const PL=[{x:.64,y:.22,r:5,c1:'#9fd0ff',c2:'#1d4f9a',earth:1},{x:.665,y:.195,r:1.5,c1:'#efefe9',c2:'#77767a'},{x:.77,y:.15,r:3.4,c1:'#f3d9b1',c2:'#9a6b45',band:1},{x:.53,y:.13,r:2.6,c1:'#efe0b8',c2:'#8f7b52',ring:1}];
+  function planets(T){for(const p of PL){const x=p.x*W+Math.sin(T*.03+p.x*7)*.8,y=p.y*H+Math.cos(T*.04+p.y*5)*.8;planet(x,y,p.r,p.c1,p.c2,p.band&&p.r>4);
+      if(p.band){ctx.fillStyle='rgba(150,95,60,.45)';ctx.fillRect(x-p.r,y-p.r*.15,p.r*2,p.r*.3)}
+      if(p.ring){ctx.strokeStyle='rgba(230,215,175,.55)';ctx.lineWidth=.8;ctx.beginPath();ctx.ellipse(x,y,p.r*2.3,p.r*.7,-.35,0,6.283);ctx.stroke()}
+      if(p.earth&&p.r>8){ctx.save();ctx.beginPath();ctx.arc(x,y,p.r,0,6.283);ctx.clip();ctx.fillStyle='rgba(90,160,90,.35)';ctx.beginPath();ctx.ellipse(x-p.r*.25,y-p.r*.1,p.r*.35,p.r*.5,.5,0,6.283);ctx.fill();ctx.beginPath();ctx.ellipse(x+p.r*.35,y+p.r*.3,p.r*.25,p.r*.2,0,0,6.283);ctx.fill();ctx.restore()}}}
   const lab={};let labKey='';
   const shards=[];let shatterKey='',shattered=new Set();
   function draw(now){
